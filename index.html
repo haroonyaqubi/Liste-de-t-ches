@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Liste de tâches</h1>
+    <form>
+        <input type="text" required>
+        <input type="submit" value="Ajouter une tâche">
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Tâches</th>
+                <th>Supprimer</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let form = document.querySelector("form");
+            let tableBody = document.querySelector('tbody');
+            let ls = localStorage.getItem('todo');
+            let todo = ls ? JSON.parse(ls) : [];
+    
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                let inpData = form.querySelector('input[type="text"]').value;
+                todo.push(inpData);
+                localStorage.setItem('todo', JSON.stringify(todo));
+                form.reset(); // Reset the form
+                displayTodos();
+            });
+    
+            function displayTodos() {
+                tableBody.innerHTML = "";
+                todo.forEach(function (data, index) {
+                    let row = document.createElement('tr');
+                    let todoCell = document.createElement('td');
+                    let deleteCell = document.createElement('td');
+    
+                    todoCell.textContent = data;
+                    deleteCell.textContent = "Supprimer";
+                    deleteCell.classList.add('delete');
+                    deleteCell.addEventListener('click', function () {
+                        del(index);
+                    });
+    
+                    row.appendChild(todoCell);
+                    row.appendChild(deleteCell);
+                    tableBody.appendChild(row);
+                });
+            }
+    
+            function del(index) {
+                todo.splice(index, 1);
+                localStorage.setItem('todo', JSON.stringify(todo));
+                displayTodos();
+            }
+    
+            displayTodos();
+        });
+    </script>
+</body>
+</html>
